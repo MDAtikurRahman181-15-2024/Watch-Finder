@@ -1,0 +1,233 @@
+/* --- Variable and Base Setup --- */
+:root {
+    --primary-color: #a259ff;
+    --primary-light: #b980ff;
+    --background-start: #1e133a;
+    --background-end: #111;
+    --text-color: #f0f0f0;
+    --text-muted: #a0a0a0;
+    --surface-color: rgba(30, 30, 30, 0.5);
+    --border-color: rgba(255, 255, 255, 0.15);
+    --error-color: #ff5252;
+}
+
+body {
+    background-image: radial-gradient(circle at top left, var(--background-start), var(--background-end));
+    color: var(--text-color);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    margin: 0;
+    padding: 2rem;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    text-align: center;
+}
+
+/* --- Main Container with Glassmorphism --- */
+.container {
+    width: 100%;
+    max-width: 900px;
+    background: var(--surface-color);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    padding: 2.5rem 3rem;
+    border-radius: 24px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+    border: 1px solid var(--border-color);
+}
+
+/* --- Typography --- */
+h1 {
+    background: linear-gradient(90deg, var(--primary-light), var(--primary-color));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+    font-size: 2.8rem;
+    font-weight: 700;
+}
+
+.subtitle {
+    color: var(--text-muted);
+    margin-top: 0;
+    margin-bottom: 3rem;
+    font-size: 1.1rem;
+    font-weight: 400;
+}
+
+/* --- Search Form --- */
+#search-form {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    position: relative;
+}
+
+#search-input {
+    flex-grow: 1;
+    padding: 0.9rem 1.25rem;
+    font-size: 1rem;
+    background-color: rgba(0, 0, 0, 0.2);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    transition: all 0.3s ease;
+}
+
+#search-input::placeholder {
+    color: #6c6c6c;
+}
+
+#search-input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 4px rgba(162, 89, 255, 0.25);
+}
+
+#search-button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.9rem 1.75rem;
+    font-size: 1rem;
+    font-weight: 500;
+    background-image: linear-gradient(90deg, #8e44ad, var(--primary-color));
+    color: white;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+#search-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 20px rgba(162, 89, 255, 0.4);
+}
+
+#search-button:active {
+    transform: translateY(0);
+}
+
+/* --- Autocomplete Dropdown --- */
+#autocomplete {
+    position: absolute;
+    top: 105%;
+    left: 0;
+    right: 150px; /* Adjust to align with input */
+    background: rgba(40, 40, 40, 0.7);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    max-height: 400px;
+    overflow-y: auto;
+    z-index: 1000;
+    display: none;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+    text-align: left;
+}
+
+.autocomplete-item {
+    padding: 0.75rem 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    border-bottom: 1px solid var(--border-color);
+    transition: background-color 0.2s ease;
+}
+
+.autocomplete-item:hover {
+    background-color: var(--primary-color);
+}
+
+/* --- Results Section --- */
+.provider-item {
+    background-color: rgba(0, 0, 0, 0.15);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    border-radius: 16px;
+    border: 1px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.provider-item:hover {
+    transform: translateY(-5px);
+    border-color: var(--border-color);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+}
+
+.provider-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.provider-logo {
+    width: 45px;
+    height: 45px;
+    border-radius: 10px;
+    margin-right: 1rem;
+}
+
+/* --- Loader & Messages --- */
+#loader {
+    display: none;
+    margin: 3rem auto;
+    border: 5px solid rgba(255, 255, 255, 0.2);
+    border-top: 5px solid var(--primary-color);
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    animation: spin 1s linear infinite;
+}
+
+.error-message {
+    background-color: rgba(255, 82, 82, 0.1);
+    color: var(--error-color);
+    padding: 1rem;
+    border-left: 4px solid var(--error-color);
+    border-radius: 8px;
+}
+
+/* Re-use existing keyframes */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* (The rest of your specific styles for country tags, dropdowns, etc., can be added here or will inherit nicely) */
+/* The styles from the previous version for countries, dropdowns etc are compatible and will work well. */
+.provider-name {font-size: 1.2rem; font-weight: bold; color: var(--text-color);}
+.countries-label {font-size: 0.9rem; color: var(--text-muted); margin-bottom: 0.5rem; font-weight: 600;}
+.countries-list {display: flex; flex-wrap: wrap; gap: 0.5rem;}
+.country-tag {background-color: rgba(255, 255, 255, 0.1); color: var(--text-color); padding: 0.4rem 0.8rem; border-radius: 8px; font-size: 0.85rem; border: 1px solid var(--border-color); transition: all 0.2s; text-decoration: none; display: inline-block; position: relative;}
+.country-tag.z-boost {z-index: 10;}
+.country-tag.clickable {cursor: pointer; background-color: var(--primary-color); border-color: var(--primary-light);}
+.country-tag.clickable:hover {background-color: var(--primary-light); transform: translateY(-2px);}
+.country-tag.non-clickable {opacity: 0.6; cursor: default;}
+.country-dropdown {display: none; position: absolute; top: 100%; left: 0; margin-top: 0.5rem; background: rgba(40, 40, 40, 0.8); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid var(--primary-color); border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.5); z-index: 1000; min-width: 220px; overflow: hidden;}
+.country-dropdown.show {display: block;}
+.dropdown-link {display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1rem; color: var(--text-color); text-decoration: none; transition: background-color 0.2s; border-bottom: 1px solid var(--border-color); font-size: 0.9rem;}
+.dropdown-link:last-child {border-bottom: none;}
+.dropdown-link:hover {background-color: var(--primary-color);}
+.dropdown-icon {width: 16px; height: 16px; flex-shrink: 0;}
+.quality-info-container {padding-top: 0.5rem;}
+.dropdown-separator {height: 1px; background-color: var(--border-color); margin: 0.5rem 0;}
+.quality-loading, .quality-none {font-size: 0.85rem; color: var(--text-muted); padding: 0.5rem 1rem; text-align: center;}
+.quality-item {display: flex; justify-content: space-between; align-items: center; padding: 0.4rem 1rem; font-size: 0.85rem;}
+.quality-provider {color: var(--text-color);}
+.quality-tags {display: flex; gap: 0.4rem;}
+.quality-tag {font-size: 0.75rem; font-weight: bold; padding: 0.1rem 0.4rem; border-radius: 4px; color: #111;}
+.quality-tag.q-4k { background-color: #ffc107; }
+.quality-tag.q-hd { background-color: #2196f3; }
+.quality-tag.q-sd { background-color: #9e9e9e; }
+.title-info {background-color: rgba(0,0,0,0.2); padding: 1.5rem; border-radius: 16px; margin-bottom: 2rem; border-left: 4px solid var(--primary-color);}
+.title-name {font-size: 1.5rem; font-weight: bold; color: var(--primary-light); margin-bottom: 0.5rem;}
+.title-meta {color: var(--text-muted); font-size: 0.95rem;}
+.autocomplete-poster {width: 40px; height: 60px; object-fit: cover; border-radius: 4px; flex-shrink: 0;}
+.autocomplete-info {flex-grow: 1;}
+.autocomplete-title {font-weight: bold; color: var(--primary-light);}
+.autocomplete-meta {font-size: 0.85rem; color: var(--text-muted);}
+
