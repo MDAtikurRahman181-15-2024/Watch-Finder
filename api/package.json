@@ -4,6 +4,6 @@
     "jsdom": "^20.0.0"
   },
   "scripts": {
-    "build": "echo 'No build step needed'"
+    "build:azure": "echo 'No build step required'"
   }
 }
