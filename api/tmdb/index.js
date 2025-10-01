@@ -74,12 +74,9 @@ module.exports = async function (context, req) {
  * @returns {Promise<object>} An object containing the JustWatch URL and provider quality info.
  */
 async function scrapeTmdbWatchPage(url, context) {
-    // --- MODIFICATION: Added CORS proxy to the fetch URL ---
-    const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(url)}`;
-    
     try {
-        // --- MODIFICATION: Fetching through the proxy URL ---
-        const response = await fetch(proxyUrl);
+        // --- CORRECTED: Fetching the URL directly, without the proxy ---
+        const response = await fetch(url);
         if (!response.ok) {
              throw new Error(`Fetch failed with status: ${response.status}`);
         }
