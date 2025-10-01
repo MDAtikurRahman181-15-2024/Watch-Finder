@@ -1,11 +1,9 @@
 const fetch = require('node-fetch');
 const { JSDOM } = require('jsdom');
 
-// --- UPDATED: Increased the retry delay ---
 const RETRY_COUNT = 3;
 const RETRY_DELAY = 5000; // 5 seconds in milliseconds
 
-// --- NEW: A helper function to create a delay ---
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 // Main handler for the Azure Function.
@@ -47,7 +45,7 @@ module.exports = async function (context, req) {
             };
 
         } else if (urlToScrape) {
-            const scrapedData = await scrapeTmdbWatchPage(urlToScrape, context); // Pass context for logging
+            const scrapedData = await scrapeTmdbWatchPage(urlToScrape, context);
             context.res = {
                 status: 200,
                 headers: { 'Content-Type': 'application/json' },
@@ -69,17 +67,20 @@ module.exports = async function (context, req) {
 };
 
 /**
- * Scrapes a TMDB watch page with a retry mechanism.
+ * Scrapes a TMDB watch page using a CORS proxy, with a retry mechanism.
  * @param {string} url - The TMDB URL to scrape.
  * @param {object} context - The Azure Function context for logging.
  * @returns {Promise<object>} An object containing the JustWatch URL and provider quality info.
  */
 async function scrapeTmdbWatchPage(url, context) {
+    // --- MODIFIED: Added CORS proxy to the fetch URL ---
+    const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(url)}`;
+
     for (let i = 0; i < RETRY_COUNT; i++) {
         try {
-            const response = await fetch(url);
+            // --- MODIFIED: Fetching through the proxy URL ---
+            const response = await fetch(proxyUrl);
             if (!response.ok) {
-                // If the response is bad (e.g., 404), don't retry, just fail.
                 throw new Error(`Fetch failed with status: ${response.status}`);
             }
             
@@ -118,25 +119,30 @@ async function scrapeTmdbWatchPage(url, context) {
                     if (li.classList.contains('ott_filter_sd')) providersInfo[providerName].stream.add('SD');
                 });
             });
+            
+            const providersExistOnPage = doc.querySelector('.ott_provider ul.providers li') !== null;
+            const hasProvidersButNoQuality = Object.keys(providersInfo).length > 0 && 
+                                             Object.values(providersInfo).every(p => p.stream.size === 0);
+
+            if (providersExistOnPage && (Object.keys(providersInfo).length === 0 || hasProvidersButNoQuality)) {
+                 throw new Error("Scrape found provider sections but failed to extract quality info. Retrying...");
+            }
 
             for (const provider in providersInfo) {
                 providersInfo[provider].stream = Array.from(providersInfo[provider].stream);
             }
 
-            // If we get here, the scrape was successful, so we return the data.
             return { justWatchUrl, providersInfo };
 
         } catch (error) {
             context.log.warn(`Scraping attempt ${i + 1} of ${RETRY_COUNT} failed: ${error.message}`);
             if (i < RETRY_COUNT - 1) {
-                // If this is not the last attempt, wait before retrying.
                 await sleep(RETRY_DELAY);
             }
         }
     }
 
-    // If the loop finishes without returning, all retries have failed.
     context.log.error(`All ${RETRY_COUNT} scraping attempts failed for URL: ${url}`);
-    return { justWatchUrl: null, providersInfo: {} }; // Return empty data on final failure.
+    return { justWatchUrl: null, providersInfo: {} }; 
 }
 
