@@ -42,10 +42,11 @@ jobs:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_BLACK_WAVE_0335E0A00 }}
           action: "upload"
           ###### Repository/Build Configurations ######
-          app_location: "/"         # App source code path
-          api_location: ""          # No backend API
-          output_location: "."      # Folder to serve (adjust if using dist/ or public/)
-          app_build_command: "echo skip build"   # Prevent Oryx from forcing Node build
+          app_location: "/"          # frontend
+          api_location: "api"        # <-- must match the folder above
+          output_location: "."       # static files
+          app_build_command: "echo skip build"
+
           github_id_token: ${{ steps.idtoken.outputs.result }}
           ###### End of Repository/Build Configurations ######
 
@@ -59,3 +60,4 @@ jobs:
         uses: Azure/static-web-apps-deploy@v1
         with:
           action: "close"
+
