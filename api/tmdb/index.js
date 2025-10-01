@@ -1,11 +1,6 @@
 const fetch = require('node-fetch');
 const { JSDOM } = require('jsdom');
 
-const RETRY_COUNT = 3;
-const RETRY_DELAY = 5000; // 5 seconds in milliseconds
-
-const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
-
 // Main handler for the Azure Function.
 module.exports = async function (context, req) {
     const TMDB_API_KEY = process.env.TMDB_API_KEY;
@@ -67,82 +62,66 @@ module.exports = async function (context, req) {
 };
 
 /**
- * Scrapes a TMDB watch page using a CORS proxy, with a retry mechanism.
+ * Scrapes a TMDB watch page using a CORS proxy.
  * @param {string} url - The TMDB URL to scrape.
  * @param {object} context - The Azure Function context for logging.
  * @returns {Promise<object>} An object containing the JustWatch URL and provider quality info.
  */
 async function scrapeTmdbWatchPage(url, context) {
-    // --- MODIFIED: Added CORS proxy to the fetch URL ---
+    // --- Uses CORS proxy to fetch the URL ---
     const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(url)}`;
 
-    for (let i = 0; i < RETRY_COUNT; i++) {
-        try {
-            // --- MODIFIED: Fetching through the proxy URL ---
-            const response = await fetch(proxyUrl);
-            if (!response.ok) {
-                throw new Error(`Fetch failed with status: ${response.status}`);
-            }
-            
-            const htmlContent = await response.text();
-            const dom = new JSDOM(htmlContent);
-            const doc = dom.window.document;
-
-            const justWatchLinkElement = doc.querySelector('.ott_title + p a[href*="justwatch.com"]');
-            const justWatchUrl = justWatchLinkElement ? justWatchLinkElement.href : null;
-
-            const providersInfo = {};
-            const providerSections = doc.querySelectorAll('.ott_provider');
-
-            providerSections.forEach(section => {
-                const typeElement = section.querySelector('h3');
-                if (!typeElement) return;
-                const type = typeElement.textContent.trim().toLowerCase();
-
-                if (type !== 'stream') return;
-
-                const offerElements = section.querySelectorAll('ul.providers > li');
-                offerElements.forEach(li => {
-                    const link = li.querySelector('a');
-                    if (!link || !link.title) return;
-
-                    const match = link.title.match(/on (.*)$/);
-                    if (!match || !match[1]) return;
-                    const providerName = match[1];
-
-                    if (!providersInfo[providerName]) {
-                        providersInfo[providerName] = { stream: new Set() };
-                    }
-                    
-                    if (li.classList.contains('ott_filter_4k')) providersInfo[providerName].stream.add('4K');
-                    if (li.classList.contains('ott_filter_hd')) providersInfo[providerName].stream.add('HD');
-                    if (li.classList.contains('ott_filter_sd')) providersInfo[providerName].stream.add('SD');
-                });
-            });
-            
-            const providersExistOnPage = doc.querySelector('.ott_provider ul.providers li') !== null;
-            const hasProvidersButNoQuality = Object.keys(providersInfo).length > 0 && 
-                                             Object.values(providersInfo).every(p => p.stream.size === 0);
-
-            if (providersExistOnPage && (Object.keys(providersInfo).length === 0 || hasProvidersButNoQuality)) {
-                 throw new Error("Scrape found provider sections but failed to extract quality info. Retrying...");
-            }
-
-            for (const provider in providersInfo) {
-                providersInfo[provider].stream = Array.from(providersInfo[provider].stream);
-            }
-
-            return { justWatchUrl, providersInfo };
-
-        } catch (error) {
-            context.log.warn(`Scraping attempt ${i + 1} of ${RETRY_COUNT} failed: ${error.message}`);
-            if (i < RETRY_COUNT - 1) {
-                await sleep(RETRY_DELAY);
-            }
+    try {
+        const response = await fetch(proxyUrl);
+        if (!response.ok) {
+            throw new Error(`Fetch failed with status: ${response.status}`);
         }
-    }
+        
+        const htmlContent = await response.text();
+        const dom = new JSDOM(htmlContent);
+        const doc = dom.window.document;
 
-    context.log.error(`All ${RETRY_COUNT} scraping attempts failed for URL: ${url}`);
-    return { justWatchUrl: null, providersInfo: {} }; 
+        const justWatchLinkElement = doc.querySelector('.ott_title + p a[href*="justwatch.com"]');
+        const justWatchUrl = justWatchLinkElement ? justWatchLinkElement.href : null;
+
+        const providersInfo = {};
+        const providerSections = doc.querySelectorAll('.ott_provider');
+
+        providerSections.forEach(section => {
+            const typeElement = section.querySelector('h3');
+            if (!typeElement) return;
+            const type = typeElement.textContent.trim().toLowerCase();
+
+            if (type !== 'stream') return;
+
+            const offerElements = section.querySelectorAll('ul.providers > li');
+            offerElements.forEach(li => {
+                const link = li.querySelector('a');
+                if (!link || !link.title) return;
+
+                const match = link.title.match(/on (.*)$/);
+                if (!match || !match[1]) return;
+                const providerName = match[1];
+
+                if (!providersInfo[providerName]) {
+                    providersInfo[providerName] = { stream: new Set() };
+                }
+                
+                if (li.classList.contains('ott_filter_4k')) providersInfo[providerName].stream.add('4K');
+                if (li.classList.contains('ott_filter_hd')) providersInfo[providerName].stream.add('HD');
+                if (li.classList.contains('ott_filter_sd')) providersInfo[providerName].stream.add('SD');
+            });
+        });
+
+        for (const provider in providersInfo) {
+            providersInfo[provider].stream = Array.from(providersInfo[provider].stream);
+        }
+
+        return { justWatchUrl, providersInfo };
+
+    } catch (error) {
+        context.log.error(`Scraping failed for URL ${url}: ${error.message}`);
+        return { justWatchUrl: null, providersInfo: {} }; 
+    }
 }
 
