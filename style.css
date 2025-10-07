@@ -12,6 +12,8 @@
 }
 
 body {
+    /* The radial-gradient is now a fallback for the canvas */
+    background-color: var(--background-end);
     background-image: radial-gradient(circle at top left, var(--background-start), var(--background-end));
     color: var(--text-color);
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
@@ -22,6 +24,17 @@ body {
     align-items: flex-start;
     min-height: 100vh;
     text-align: center;
+    cursor: none; /* Hide the default cursor */
+}
+
+/* --- Animation Canvas --- */
+#fluid-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1; /* Place it behind all other content */
 }
 
 /* --- Main Container with Glassmorphism --- */
@@ -35,6 +48,7 @@ body {
     border-radius: 24px;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
     border: 1px solid var(--border-color);
+    z-index: 1; /* Ensure container is above the canvas */
 }
 
 /* --- Typography --- */
@@ -230,4 +244,3 @@ h1 {
 .autocomplete-info {flex-grow: 1;}
 .autocomplete-title {font-weight: bold; color: var(--primary-light);}
 .autocomplete-meta {font-size: 0.85rem; color: var(--text-muted);}
-
