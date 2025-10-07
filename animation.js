@@ -57,7 +57,7 @@
         pointers[0].moved = true;
     });
 
-    // --- MODIFIED: Touch listeners for fluid background ---
+    // Touch listeners for fluid background
     window.addEventListener('touchmove', e => {
         // Only prevent scrolling if there are no results visible
         if (!document.body.classList.contains('results-visible')) {
@@ -99,7 +99,7 @@
     let idleTime = 0;
     let idleAnimation = null;
     let idleAnimationFrame = 0;
-    const nekoSpeed = 10;
+    const nekoSpeed = 10; // This controls how fast the cat chases the cursor.
 
     const spriteSets = {
         idle: [[-3, -3]],
@@ -133,19 +133,16 @@
         nekoEl.style.top = `${nekoPosY - 16}px`;
         nekoEl.style.zIndex = '999999';
 
-        // Use the direct URL to your GitHub repository file.
         const onekoSpriteUrl = "https://raw.githubusercontent.com/MDAtikurRahman181-15-2024/Cat/main/oneko.gif";
         nekoEl.style.backgroundImage = `url('${onekoSpriteUrl}')`;
 
         document.body.appendChild(nekoEl);
 
-        // Mouse listener (existing)
         document.addEventListener('mousemove', (event) => {
             mousePosX = event.clientX;
             mousePosY = event.clientY;
         });
 
-        // --- NEW: Touch listeners for cat cursor ---
         document.addEventListener('touchmove', (event) => {
             if(event.touches[0]) {
                 mousePosX = event.touches[0].clientX;
@@ -225,6 +222,7 @@
         const diffY = nekoPosY - mousePosY;
         const distance = Math.sqrt(diffX ** 2 + diffY ** 2);
 
+        // --- REVERTED: This is the original "chasing" logic ---
         if (distance < nekoSpeed || distance < 48) {
             idle();
             return;
@@ -246,6 +244,7 @@
         direction += diffX / distance < -0.5 ? 'E' : '';
         setSprite(direction, frameCount);
 
+        // Move the cat at a fixed speed towards the cursor
         nekoPosX -= (diffX / distance) * nekoSpeed;
         nekoPosY -= (diffY / distance) * nekoSpeed;
 

@@ -24,11 +24,11 @@ body {
     align-items: flex-start;
     min-height: 100vh;
     text-align: center;
-    cursor: none; /* Hide the default cursor */
-    overflow: hidden; /* --- MODIFIED: Disable scrolling by default --- */
+    cursor: default; /* --- CORRECTED: This makes your cursor visible again --- */
+    overflow: hidden; 
 }
 
-/* --- NEW: Rule to re-enable scrolling when results are visible --- */
+/* --- Rule to re-enable scrolling when results are visible --- */
 body.results-visible {
     overflow: auto;
 }
