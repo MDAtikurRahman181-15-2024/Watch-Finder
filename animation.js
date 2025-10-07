@@ -57,9 +57,12 @@
         pointers[0].moved = true;
     });
 
-    // --- NEW: Touch listeners for fluid background ---
+    // --- MODIFIED: Touch listeners for fluid background ---
     window.addEventListener('touchmove', e => {
-        e.preventDefault(); // Prevents the page from scrolling
+        // Only prevent scrolling if there are no results visible
+        if (!document.body.classList.contains('results-visible')) {
+            e.preventDefault(); 
+        }
         if (e.touches[0]) {
             pointers[0].x = e.touches[0].clientX;
             pointers[0].y = e.touches[0].clientY;

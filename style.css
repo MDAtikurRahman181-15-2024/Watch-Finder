@@ -25,7 +25,14 @@ body {
     min-height: 100vh;
     text-align: center;
     cursor: none; /* Hide the default cursor */
+    overflow: hidden; /* --- MODIFIED: Disable scrolling by default --- */
 }
+
+/* --- NEW: Rule to re-enable scrolling when results are visible --- */
+body.results-visible {
+    overflow: auto;
+}
+
 
 /* --- Animation Canvas --- */
 #fluid-canvas {
@@ -244,3 +251,4 @@ h1 {
 .autocomplete-info {flex-grow: 1;}
 .autocomplete-title {font-weight: bold; color: var(--primary-light);}
 .autocomplete-meta {font-size: 0.85rem; color: var(--text-muted);}
+

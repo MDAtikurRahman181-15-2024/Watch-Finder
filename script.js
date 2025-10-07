@@ -82,6 +82,9 @@ form.addEventListener('submit', async (event) => {
     const query = input.value.trim();
     if (!query) return;
 
+    // --- MODIFIED: Disable scrolling when a new search starts ---
+    document.body.classList.remove('results-visible');
+
     autocompleteContainer.style.display = 'none';
     resultsContainer.innerHTML = '';
     loader.style.display = 'block';
@@ -196,6 +199,9 @@ async function fetchContentDetails(content) {
  * Displays the final results on the page, grouping providers and their countries.
  */
 function displayResults(titleName, year, mediaType, allProviders, tmdbId) {
+    // --- MODIFIED: Enable scrolling now that there are results ---
+    document.body.classList.add('results-visible');
+
     // Display title info
     resultsContainer.innerHTML = `
         <div class="title-info">
@@ -383,4 +389,3 @@ function getCountryName(code) {
         return code.toUpperCase();
     }
 }
-
