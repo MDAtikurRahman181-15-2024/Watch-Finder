@@ -59,7 +59,6 @@
 
     // Touch listeners for fluid background
     window.addEventListener('touchmove', e => {
-        // Only prevent scrolling if there are no results visible
         if (!document.body.classList.contains('results-visible')) {
             e.preventDefault(); 
         }
@@ -99,7 +98,7 @@
     let idleTime = 0;
     let idleAnimation = null;
     let idleAnimationFrame = 0;
-    const nekoSpeed = 10; // This controls how fast the cat chases the cursor.
+    const nekoSpeed = 10;
 
     const spriteSets = {
         idle: [[-3, -3]],
@@ -133,7 +132,8 @@
         nekoEl.style.top = `${nekoPosY - 16}px`;
         nekoEl.style.zIndex = '999999';
 
-        const onekoSpriteUrl = "https://raw.githubusercontent.com/MDAtikurRahman181-15-2024/Cat/main/oneko.gif";
+        // --- MODIFIED: Use local file path ---
+        const onekoSpriteUrl = "oneko.gif";
         nekoEl.style.backgroundImage = `url('${onekoSpriteUrl}')`;
 
         document.body.appendChild(nekoEl);
@@ -142,19 +142,18 @@
             mousePosX = event.clientX;
             mousePosY = event.clientY;
         });
-
         document.addEventListener('touchmove', (event) => {
-            if(event.touches[0]) {
+            if (event.touches[0]) {
                 mousePosX = event.touches[0].clientX;
                 mousePosY = event.touches[0].clientY;
             }
         });
         document.addEventListener('touchstart', (event) => {
-             if(event.touches[0]) {
-                mousePosX = event.touches[0].clientX;
-                mousePosY = event.touches[0].clientY;
-            }
-        });
+            if (event.touches[0]) {
+               mousePosX = event.touches[0].clientX;
+               mousePosY = event.touches[0].clientY;
+           }
+       });
 
         window.requestAnimationFrame(onAnimationFrame);
     }
@@ -222,7 +221,6 @@
         const diffY = nekoPosY - mousePosY;
         const distance = Math.sqrt(diffX ** 2 + diffY ** 2);
 
-        // --- REVERTED: This is the original "chasing" logic ---
         if (distance < nekoSpeed || distance < 48) {
             idle();
             return;
@@ -244,10 +242,9 @@
         direction += diffX / distance < -0.5 ? 'E' : '';
         setSprite(direction, frameCount);
 
-        // Move the cat at a fixed speed towards the cursor
         nekoPosX -= (diffX / distance) * nekoSpeed;
         nekoPosY -= (diffY / distance) * nekoSpeed;
-
+        
         nekoPosX = Math.min(Math.max(16, nekoPosX), window.innerWidth - 16);
         nekoPosY = Math.min(Math.max(16, nekoPosY), window.innerHeight - 16);
 
@@ -255,7 +252,6 @@
         nekoEl.style.top = `${nekoPosY - 16}px`;
     }
 
-    // Ensures the script runs after the page is fully loaded
     document.addEventListener('DOMContentLoaded', init);
 })();
 
