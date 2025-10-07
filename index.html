@@ -3,7 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Movies and Shows finder</title>
+    <title>StreamKey | Find Where to Stream Movies and Shows</title>
+
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Instantly find where to stream your favorite movies and TV shows across hundreds of services and countries. Your ultimate guide to what's on.">
+    <meta name="keywords" content="movie finder, show finder, streaming guide, where to watch, netflix, hulu, amazon prime, streamkey">
+    
+    <!-- Open Graph / Social Media Meta Tags -->
+    <meta property="og:title" content="StreamKey | Movies and Shows Finder">
+    <meta property="og:description" content="Instantly find where to stream your favorite movies and TV shows.">
+    <meta property="og:image" content="https://placehold.co/1200x630/a259ff/ffffff?text=StreamKey">
+    <meta property="og:url" content="https://streamkey.tech/">
+
+    <!-- Google Site Verification (You will get this from Google Search Console) -->
+    <meta name="google-site-verification" content="llPSDp4GpCKWMYIt8dj7FfMYx11KLxVepJQG2nbpb6g" />
+
+    <!-- Google Fonts for a modern look -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
@@ -15,13 +30,14 @@
     <canvas id="fluid-canvas"></canvas>
 
     <div class="container">
-        <h1>Movies and Shows finder</h1>
-        <p class="subtitle">Find where to stream your favorite movies and shows, instantly.</p>
+        <h1>StreamKey</h1>
+        <p class="subtitle">Movies and shows finder in all countries at once.</p>
 
         <form id="search-form">
             <input type="text" id="search-input" placeholder="e.g., The Matrix, Breaking Bad..." required autocomplete="off">
             <div id="autocomplete"></div>
             <button type="submit" id="search-button">
+                <!-- Search Icon SVG -->
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
                     <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
                 </svg>
@@ -36,3 +52,4 @@
     <script src="animation.js"></script>
 </body>
 </html>
+
