@@ -50,11 +50,31 @@
         requestAnimationFrame(animate);
     }
 
+    // Mouse listener (existing)
     window.addEventListener('mousemove', e => {
         pointers[0].x = e.clientX;
         pointers[0].y = e.clientY;
         pointers[0].moved = true;
     });
+
+    // --- NEW: Touch listeners for fluid background ---
+    window.addEventListener('touchmove', e => {
+        e.preventDefault(); // Prevents the page from scrolling
+        if (e.touches[0]) {
+            pointers[0].x = e.touches[0].clientX;
+            pointers[0].y = e.touches[0].clientY;
+            pointers[0].moved = true;
+        }
+    });
+     window.addEventListener('touchstart', e => {
+        if (e.touches[0]) {
+            pointers[0].x = e.touches[0].clientX;
+            pointers[0].y = e.touches[0].clientY;
+            pointers[0].moved = true;
+        }
+    });
+
+
     window.addEventListener('resize', () => {
         width = canvas.width = window.innerWidth;
         height = canvas.height = window.innerHeight;
@@ -116,9 +136,24 @@
 
         document.body.appendChild(nekoEl);
 
+        // Mouse listener (existing)
         document.addEventListener('mousemove', (event) => {
-        mousePosX = event.clientX;
-        mousePosY = event.clientY;
+            mousePosX = event.clientX;
+            mousePosY = event.clientY;
+        });
+
+        // --- NEW: Touch listeners for cat cursor ---
+        document.addEventListener('touchmove', (event) => {
+            if(event.touches[0]) {
+                mousePosX = event.touches[0].clientX;
+                mousePosY = event.touches[0].clientY;
+            }
+        });
+        document.addEventListener('touchstart', (event) => {
+             if(event.touches[0]) {
+                mousePosX = event.touches[0].clientX;
+                mousePosY = event.touches[0].clientY;
+            }
         });
 
         window.requestAnimationFrame(onAnimationFrame);
@@ -221,3 +256,4 @@
     // Ensures the script runs after the page is fully loaded
     document.addEventListener('DOMContentLoaded', init);
 })();
+
